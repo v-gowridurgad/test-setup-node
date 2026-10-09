@@ -1,38 +1,39 @@
-name: Repro 1412 - mirror is ignored
+name: 'Repro 1412'
+
 on:
   workflow_dispatch:
 
 jobs:
-  # Control: version IS in the actions/node-versions manifest.
-  # Mirror points at a black hole. Expect: step SUCCEEDS (proves mirror ignored).
-  manifest-version-ignores-mirror:
+  manifest-wins:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-        
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: '22.20.0'
-          mirror: 'https://this-mirror-does-not-exist.invalid/dist'
-          mirror-token: 'fake-token'
-      - run: |
-          echo "Installed: $(node --version)"
-          echo "BUG CONFIRMED: node installed despite an unreachable mirror,"
-          echo "because it came from the GitHub manifest instead."
+          mirror: 'https://example.invalid/nodejs'
+      - run: node --version
 
-  # Proof the mirror input itself is wired up correctly:
-  # version is NOT in the manifest, so the fallback path runs.
-  # Expect: step FAILS trying to reach the bogus mirror.
-  non-manifest-version-uses-mirror:
+  lts-crash:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
-          mirror: 'https://this-mirror-does-not-exist.invalid/dist'
-          mirror-token: 'fake-token'
-      - run: echo "If you see this, the mirror was NOT used."
+          token: 'ghp_invalidtokenforrepro000000000000000'
+          mirror: 'https://example.invalid/nodejs'
+      - run: node --version
+
+  pinned-reaches-mirror:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses:  actions/setup-node@v7
+        with:
+          node-version: '22.20.0'
+          token: 'ghp_invalidtokenforrepro000000000000000'
+          mirror: 'https://example.invalid/nodejs'
+      - run: node --version
