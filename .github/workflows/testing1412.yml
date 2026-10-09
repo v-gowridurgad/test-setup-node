@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: ./
+      - uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
           token: ${{ env.INVALID_TOKEN }}
@@ -32,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: ./
+      - uses: actions/setup-node@v7
         with:
           node-version: '22.20.0'
           token: ${{ env.INVALID_TOKEN }}
