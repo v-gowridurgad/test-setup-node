@@ -2,11 +2,6 @@ name: 'Repro 1412: LTS alias skips mirror fallback'
 
 on:
   workflow_dispatch:
-    inputs:
-      mirror:
-        description: 'Mirror base URL (must serve <mirror>/dist/index.json)'
-        required: false
-        default: 'https://example.invalid/nodejs'
 
 env:
   INVALID_TOKEN: 'ghp_invalidtokenforrepro000000000000000'
@@ -23,7 +18,7 @@ jobs:
         with:
           node-version: 'lts/*'
           token: ${{ env.INVALID_TOKEN }}
-          mirror: ${{ inputs.mirror }}
+          mirror: 'https://example.invalid/nodejs'
 
       - run: node --version
 
@@ -38,6 +33,6 @@ jobs:
         with:
           node-version: '22.20.0'
           token: ${{ env.INVALID_TOKEN }}
-          mirror: ${{ inputs.mirror }}
+          mirror: 'https://example.invalid/nodejs'
 
       - run: node --version
