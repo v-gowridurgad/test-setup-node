@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22.20.0'
-          mirror: 'https://example.invalid/nodejs'
+          mirror: 'https://mirrors.aliyun.com/nodejs-release'
       - run: node --version
 
   lts-crash:
@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 'lts/*'
           token: 'ghp_invalidtokenforrepro000000000000000'
-          mirror: 'https://example.invalid/nodejs'
+          mirror: 'https://mirrors.aliyun.com/nodejs-release'
       - run: node --version
 
   pinned-reaches-mirror:
@@ -35,5 +35,5 @@ jobs:
         with:
           node-version: '22.20.0'
           token: 'ghp_invalidtokenforrepro000000000000000'
-          mirror: 'https://example.invalid/nodejs'
+          mirror: 'https://mirrors.aliyun.com/nodejs-release'
       - run: node --version
