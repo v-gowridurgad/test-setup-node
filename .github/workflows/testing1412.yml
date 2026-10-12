@@ -26,6 +26,7 @@ jobs:
           token: ''
           node-version: 24
           check-latest: true
+          mirror: 'https://mirrors.tuna.tsinghua.edu.cn/nodejs-release'
 
       - name: "rate limit (after)"
         run: |
