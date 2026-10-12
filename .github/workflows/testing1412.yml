@@ -23,7 +23,7 @@ jobs:
 
     
       - name: Set up Node (empty token + LTS alias + mirror)
-        uses: actions/setup-node@v7
+        uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest   
         with:
           token: ''
           node-version: 'lts/*'
