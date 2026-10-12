@@ -5,17 +5,13 @@ on:
 
 jobs:
   empty-token-rate-limited:
-    # Must be self-hosted: all steps need to share one egress IP,
-    # which is what the unauthenticated 60/hr quota is keyed on.
+    
     runs-on: [self-hosted]
     steps:
       - name: Rate limit before
         run: |
           curl -s https://api.github.com/rate_limit | jq '.resources.core'
 
-      # GHES sends no credentials to github.com. Burn the 60/hr
-      # unauthenticated quota for this IP to force the condition
-      # a GHES runner reaches on its own within the hour.
       - name: Exhaust unauthenticated quota
         run: |
           for i in $(seq 1 70); do
@@ -25,9 +21,7 @@ jobs:
           echo
           curl -s https://api.github.com/rate_limit | jq '.resources.core'
 
-      # token: '' is exactly what action.yml resolves to on GHES:
-      #   ${{ github.server_url == 'https://github.com' && github.token || '' }}
-      # lts/* is the unguarded path - getManifest() is called with no try/catch.
+    
       - name: Set up Node (empty token + LTS alias + mirror)
         uses: actions/setup-node@v7
         with:
