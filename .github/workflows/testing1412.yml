@@ -1,25 +1,41 @@
-name: testing-1412
+name: repro-1412
 
 on:
   workflow_dispatch:
 
 jobs:
-  # BUG: dies before the mirror is ever contacted
-  lts-alias:
-    runs-on: ubuntu-latest
+  empty-token-rate-limited:
+    # Must be self-hosted: all steps need to share one egress IP,
+    # which is what the unauthenticated 60/hr quota is keyed on.
+    runs-on: [self-hosted]
     steps:
-      - uses: actions/setup-node@v7
+      - name: Rate limit before
+        run: |
+          curl -s https://api.github.com/rate_limit | jq '.resources.core'
+
+      # GHES sends no credentials to github.com. Burn the 60/hr
+      # unauthenticated quota for this IP to force the condition
+      # a GHES runner reaches on its own within the hour.
+      - name: Exhaust unauthenticated quota
+        run: |
+          for i in $(seq 1 70); do
+            curl -s -o /dev/null -w "%{http_code} " \
+              https://api.github.com/repos/actions/node-versions/contents/versions-manifest.json
+          done
+          echo
+          curl -s https://api.github.com/rate_limit | jq '.resources.core'
+
+      # token: '' is exactly what action.yml resolves to on GHES:
+      #   ${{ github.server_url == 'https://github.com' && github.token || '' }}
+      # lts/* is the unguarded path - getManifest() is called with no try/catch.
+      - name: Set up Node (empty token + LTS alias + mirror)
+        uses: actions/setup-node@v7
         with:
+          token: ''
           node-version: 'lts/*'
           mirror: 'https://example.invalid/nodejs'
-          token: 'ghp_invalidtokentoforcemanifestfailure00'
 
-  # CONTROL: same failure, but survives and DOES reach the mirror
-  pinned:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-node@v7
-        with:
-          node-version: '22.20.0'
-          mirror: 'https://example.invalid/nodejs'
-          token: 'ghp_invalidtokentoforcemanifestfailure00'
+      - name: Rate limit after
+        if: always()
+        run: |
+          curl -s https://api.github.com/rate_limit | jq '.resources.core'
