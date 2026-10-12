@@ -11,7 +11,6 @@ jobs:
       - name: Rate limit before
         run: |
           curl -s https://api.github.com/rate_limit | jq '.resources.core'
-
       - name: Exhaust unauthenticated quota
         run: |
           for i in $(seq 1 70); do
@@ -20,13 +19,12 @@ jobs:
           done
           echo
           curl -s https://api.github.com/rate_limit | jq '.resources.core'
-
     
       - name: Set up Node (empty token + LTS alias + mirror)
-        uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest   
+        uses: actions/setup-node@v7
         with:
           token: ''
-          node-version: 'lts/*'
+          node-version: '26'
           mirror: 'https://example.invalid/nodejs'
 
       - name: Rate limit after
