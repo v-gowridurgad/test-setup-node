@@ -12,7 +12,8 @@ jobs:
           echo "127.0.0.1 api.github.com" | sudo tee -a /etc/hosts
           echo "127.0.0.1 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 
-      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+      # - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+      - uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
           mirror: 'https://example.invalid/nodejs'
@@ -21,11 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Block github.com and raw.githubusercontent.com
+      
         run: |
           echo "127.0.0.1 api.github.com" | sudo tee -a /etc/hosts
           echo "127.0.0.1 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 
-      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+      # - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+      - uses: actions/setup-node@v7
         with:
           node-version: '26'
           mirror: 'https://example.invalid/nodejs'
