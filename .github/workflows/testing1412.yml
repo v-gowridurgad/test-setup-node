@@ -1,4 +1,4 @@
-name: repro-1412-raw-blocked
+name: repro-1412
 
 on:
   workflow_dispatch:
@@ -7,11 +7,21 @@ jobs:
   lts-alias:
     runs-on: ubuntu-latest
     steps:
-      - name: Block raw.githubusercontent.com
-        run: echo "127.0.0.1 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-
-      - uses: actions/setup-node@v7
+      - name: Clear Node toolcache
+        run: sudo rm -rf /opt/hostedtoolcache/node
+      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
         with:
           token: 'ghp_invalidtokentoforcemanifestfailure00'
           node-version: 'lts/*'
+          mirror: 'https://example.invalid/nodejs'
+
+  direct-version-control:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear Node toolcache
+        run: sudo rm -rf /opt/hostedtoolcache/node
+      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+        with:
+          token: 'ghp_invalidtokentoforcemanifestfailure00'
+          node-version: '26'
           mirror: 'https://example.invalid/nodejs'
