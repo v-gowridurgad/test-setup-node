@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Clear Node toolcache
         run: sudo rm -rf /opt/hostedtoolcache/node
-      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+      - uses: v-gowridurgad/setup-node@1412-lts
         with:
           token: 'ghp_invalidtokentoforcemanifestfailure00'
           node-version: 'lts/*'
