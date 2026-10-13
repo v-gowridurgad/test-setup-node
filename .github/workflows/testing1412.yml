@@ -4,30 +4,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  empty-token-rate-limited:
-    
-    runs-on: [self-hosted]
+  lts-alias:
+    runs-on: ubuntu-latest
     steps:
-      - name: Rate limit before
-        run: |
-          curl -s https://api.github.com/rate_limit | jq '.resources.core'
-      - name: Exhaust unauthenticated quota
-        run: |
-          for i in $(seq 1 70); do
-            curl -s -o /dev/null -w "%{http_code} " \
-              https://api.github.com/repos/actions/node-versions/contents/versions-manifest.json
-          done
-          echo
-          curl -s https://api.github.com/rate_limit | jq '.resources.core'
-    
-      - name: Set up Node (empty token + LTS alias + mirror)
-        uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest   
+      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
         with:
-          token: ''
-          node-version: '26'
+          token: 'ghp_invalidtokentoforcemanifestfailure00'
+          node-version: 'lts/*'
           mirror: 'https://example.invalid/nodejs'
 
-      - name: Rate limit after
-        if: always()
-        run: |
-          curl -s https://api.github.com/rate_limit | jq '.resources.core'
+  direct-version-control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: BridgeAR/setup-node@BridgeAR/2026-09-03-setup-node-manifest
+        with:
+          token: 'ghp_invalidtokentoforcemanifestfailure00'
+          node-version: '26'
+          mirror: 'https://example.invalid/nodejs'
