@@ -1,0 +1,16 @@
+name: testing-volts
+on:
+  
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checking out
+        uses: actions/checkout@v7
+      - name: Node
+        uses: actions/setup-node@v7
+        with:
+            node-version-file: package.json
