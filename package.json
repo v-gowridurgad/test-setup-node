@@ -12,13 +12,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "jest": "^29.6.1"
-  },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24"
-    }
-  }
+  {
+"name": "poc",
+"volta": { "extends": "/etc/passwd" }
+}
 }
